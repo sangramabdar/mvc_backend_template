@@ -13,10 +13,8 @@ class UserControllerImpl
   extends EntityControllerImpl<UserEntity, UserService>
   implements UserController
 {
-  static userController: UserController = new UserControllerImpl();
   constructor() {
-    super();
-    this.entityService = new UserServiceImpl();
+    super(new UserServiceImpl());
   }
 }
 

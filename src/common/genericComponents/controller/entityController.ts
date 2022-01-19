@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { statusCodeHandler } from "../../../helper/errorMiddleWare";
+
 import ResponseBodyBuilder from "../../helper/responseBodyBuilder";
 import { EntityService } from "../service/entityServive";
 
@@ -15,6 +15,10 @@ class EntityControllerImpl<E, T extends EntityService<E>>
   implements EntityController<E>
 {
   entityService: T;
+
+  constructor(entityService: T) {
+    this.entityService = entityService;
+  }
 
   getEntity = async (request: Request, response: Response, next: any) => {
     try {
@@ -56,9 +60,7 @@ class EntityControllerImpl<E, T extends EntityService<E>>
       const responseBody = new ResponseBodyBuilder<string>("", result);
       return response.json(responseBody);
     } catch (error) {
-      let responseBody = new ResponseBodyBuilder<string>(error.message);
-      statusCodeHandler(error, responseBody, response);
-      return response.json(responseBody);
+      next(error);
     }
   };
 
