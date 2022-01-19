@@ -1,13 +1,11 @@
 import { Request, Response } from "express";
-
 import {
-  StringSchema,
   NumberSchema,
-  validateSchema,
   SchemaObject,
-} from "../../common/schemaValidation/schema";
-
-import BaseEntity from "../baseEntity";
+  StringSchema,
+  validateSchema,
+} from "../common/schemaValidation/schema";
+import BaseEntity from "./BaseEntity";
 
 interface UserEntity extends BaseEntity {
   name: string;
@@ -15,20 +13,22 @@ interface UserEntity extends BaseEntity {
   address: string;
   gender: string;
   email: string;
+  password: string;
 }
 
 const UserSchema = SchemaObject<UserEntity>({
   name: new StringSchema("name").max(10).min(5).onlyAplhabates(),
   age: new NumberSchema("age").notNegative().min(18).max(100),
   gender: new StringSchema("gender").of(["male", "female"]),
+  email: new StringSchema("email").email(),
 });
 
 async function validateUserSchema(request: Request, response: Response, next) {
   try {
     if (request.method === "POST") {
-      request.body = await validateSchema(UserSchema, request.body, "POST");
+      request.body = await validateSchema(UserSchema, request.body, "complete");
     } else {
-      request.body = await validateSchema(UserSchema, request.body, "PUT");
+      request.body = await validateSchema(UserSchema, request.body, "partial");
     }
     next();
   } catch (error) {

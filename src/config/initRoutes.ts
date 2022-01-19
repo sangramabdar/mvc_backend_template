@@ -1,14 +1,12 @@
-import RootRouter from "../root/root.routes";
-import RootController from "../root/root.controller";
-import UserRouter from "../entity/user/user.routes";
+import UserRouter from "../routes/user";
 import { app } from "./initserver";
-import { errorMiddleWare } from "../common/helper/errorMiddleWare";
+import { errorHandlingMiddleWare } from "../common/helper/errorMiddleWare";
+import RootController from "../controllers/RootController";
+import RootRouter from "../routes/root";
 
 async function initRoutes() {
   app.use("/", RootRouter);
   app.use("/users", UserRouter);
   app.use("*", RootController.wrongRoute);
-  app.use(errorMiddleWare);
+  app.use(errorHandlingMiddleWare);
 }
-
-export default initRoutes;

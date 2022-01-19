@@ -9,7 +9,7 @@ import { Repository } from "../Repository/repository";
 interface EntityService<E> {
   getEntity(id: string): Promise<E>;
   getAllEntities(): Promise<E[]>;
-  addEntity(entity: E);
+  addEntity(entity: E): Promise<E>;
   updateEntity(id: string, entity: E);
   deleteEntity(id: string);
 }
@@ -33,7 +33,7 @@ class EntityServiceImpl<E, T extends Repository<E>>
     if (!result) {
       throw new EntityNotFound(this.entityName);
     }
-    return result as E;
+    return result;
   }
 
   async getAllEntities(): Promise<E[]> {
@@ -54,7 +54,7 @@ class EntityServiceImpl<E, T extends Repository<E>>
       throw new DataBaseConnectionError();
     }
     await this.entityRepository.add(entity, db);
-    return "added";
+    return entity;
   }
 
   async updateEntity(id: string, entity: E) {

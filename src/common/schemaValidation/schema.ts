@@ -183,12 +183,12 @@ class NumberSchema extends Schema<number> {
 async function validateSchema<T>(
   entity: {},
   body: {},
-  method: "POST" | "PUT"
+  operation: "complete" | "partial"
 ): Promise<{}> {
   let newObject = {};
 
-  switch (method) {
-    case "POST":
+  switch (operation) {
+    case "complete":
       var keys = Object.keys(entity);
 
       for (let key of keys) {
@@ -200,7 +200,7 @@ async function validateSchema<T>(
       }
       break;
 
-    case "PUT":
+    case "partial":
       var keys = Object.keys(body);
 
       for (let key of keys) {

@@ -2,7 +2,7 @@ import { Db, ObjectId } from "mongodb";
 
 interface Repository<T> {
   getAll(db: Db): Promise<T[] | null>;
-  add(element: T, db: Db);
+  add(element: T, db: Db): Promise<T>;
   updateById(id: string, element: T, db: Db): Promise<boolean>;
   deleteById(id: string, db: Db): Promise<boolean>;
   getById(id: string, db: Db): Promise<T | null>;
@@ -28,6 +28,7 @@ class RepositoryImpl<T> implements Repository<T> {
     const insertOneResult = await db
       .collection(this._collection)
       .insertOne(element);
+    return element;
   }
 
   async updateById(id: string, element: T, db: Db): Promise<boolean> {

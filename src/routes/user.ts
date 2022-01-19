@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { validateBody, validateId } from "../../common/helper/validation";
-import { dependencies } from "../../config/dependencies";
-import { validateUserSchema } from "./user.entity";
+import { validateBody, validateId } from "../common/helper/validation";
+import { dependencies } from "../config/dependencies";
+import { validateUserSchema } from "../entity/UserEntity";
 
 const UserRouter = Router();
 

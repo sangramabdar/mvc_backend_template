@@ -1,9 +1,12 @@
 import {
   EntityService,
   EntityServiceImpl,
-} from "../../common/genericComponents/service/entityServive";
-import { UserEntity } from "./user.entity";
-import { UserRepository, UserRepositoryImpl } from "./user.repository";
+} from "../common/genericComponents/service/entityServive";
+import { UserEntity } from "../entity/UserEntity";
+import {
+  UserRepository,
+  UserRepositoryImpl,
+} from "../repository/UserRepository";
 
 interface UserService extends EntityService<UserEntity> {}
 

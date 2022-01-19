@@ -1,7 +1,7 @@
 import {
   UserController,
   UserControllerImpl,
-} from "../entity/user/user.controller";
+} from "../controllers/UserController";
 
 type DependencyType = {
   userController: UserController;

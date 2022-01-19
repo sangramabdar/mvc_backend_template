@@ -1,6 +1,5 @@
-import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
-import RootService from "./root.service";
+import RootService from "../services/RootService";
 
 class RootController {
   private static appService: RootService = new RootService();

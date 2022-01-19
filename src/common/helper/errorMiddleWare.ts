@@ -26,10 +26,10 @@ async function statusCodeHandler(
   }
 }
 
-async function errorMiddleWare(error, request, response, next) {
+async function errorHandlingMiddleWare(error, request, response, next) {
   let responseBody = new ResponseBodyBuilder<string>(error.message);
   await statusCodeHandler(error, responseBody, response);
   return response.json(responseBody);
 }
 
-export { errorMiddleWare, statusCodeHandler };
+export { errorHandlingMiddleWare, statusCodeHandler };

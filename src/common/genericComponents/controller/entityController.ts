@@ -45,7 +45,7 @@ class EntityControllerImpl<E, T extends EntityService<E>>
     try {
       const user: E = request.body;
       const result = await this.entityService.addEntity(user);
-      let responseBody = new ResponseBodyBuilder<string>("", result);
+      let responseBody = new ResponseBodyBuilder<E>("", result).setStatus(201);
       return response.status(201).json(responseBody);
     } catch (error) {
       next(error);
