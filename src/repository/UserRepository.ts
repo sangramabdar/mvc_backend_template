@@ -1,7 +1,8 @@
+import { Db } from "mongodb";
 import {
   Repository,
   RepositoryImpl,
-} from "../common/genericComponents/Repository/repository";
+} from "../common/genericComponents/repository/repository";
 import { UserEntity } from "../entity/UserEntity";
 
 interface UserRepository<T> extends Repository<T> {}

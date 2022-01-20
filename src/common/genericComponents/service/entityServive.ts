@@ -4,7 +4,7 @@ import {
   EntityNotFound,
 } from "../../helper/exceptions";
 
-import { Repository } from "../Repository/repository";
+import { Repository } from "../repository/repository";
 
 interface EntityService<E> {
   getEntity(id: string): Promise<E>;

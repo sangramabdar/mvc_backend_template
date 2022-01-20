@@ -1,11 +1,20 @@
 import { Db, ObjectId } from "mongodb";
 
+type FilterFields<T> = {
+  [K in keyof T]: 1;
+};
+
 interface Repository<T> {
   getAll(db: Db): Promise<T[] | null>;
   add(element: T, db: Db): Promise<T>;
   updateById(id: string, element: T, db: Db): Promise<boolean>;
   deleteById(id: string, db: Db): Promise<boolean>;
   getById(id: string, db: Db): Promise<T | null>;
+  getSpecificFields(
+    id: string,
+    filterFields: FilterFields<Partial<T>>,
+    db: Db
+  ): Promise<T | null>;
 }
 
 class RepositoryImpl<T> implements Repository<T> {
@@ -34,10 +43,8 @@ class RepositoryImpl<T> implements Repository<T> {
   async updateById(id: string, element: T, db: Db): Promise<boolean> {
     const _id = new ObjectId(id);
 
-    const updateResult = await db.collection(this._collection).updateOne(
-      {
-        _id,
-      },
+    const updateResult = await db.collection<T>(this._collection).updateOne(
+      {},
       {
         $set: element,
       }
@@ -67,6 +74,27 @@ class RepositoryImpl<T> implements Repository<T> {
       return null;
     }
     return users as T[];
+  }
+
+  async getSpecificFields(
+    id: string,
+    filterFields: FilterFields<T>,
+    db: Db
+  ): Promise<T | null> {
+    const _id = new ObjectId(id);
+    const result = await db.collection(this._collection).findOne(
+      { _id },
+      {
+        projection: {
+          ...filterFields,
+        },
+      }
+    );
+
+    if (result == null) {
+      return null;
+    }
+    return result as T;
   }
 }
 

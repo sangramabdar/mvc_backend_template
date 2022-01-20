@@ -10,3 +10,5 @@ async function initRoutes() {
   app.use("*", RootController.wrongRoute);
   app.use(errorHandlingMiddleWare);
 }
+
+export default initRoutes;

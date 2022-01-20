@@ -18,5 +18,4 @@ class UserServiceImpl
     super(new UserRepositoryImpl(), "user");
   }
 }
-
 export { UserService, UserServiceImpl };

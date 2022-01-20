@@ -7,11 +7,6 @@ import { UserService, UserServiceImpl } from "../services/UserService";
 
 interface UserController extends EntityController<UserEntity> {}
 
-type EmailEntity = {
-  email: string;
-  password: string;
-};
-
 class UserControllerImpl
   extends EntityControllerImpl<UserEntity, UserService>
   implements UserController

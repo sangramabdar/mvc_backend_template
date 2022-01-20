@@ -1,8 +1,8 @@
 import Express from "express";
 import cors from "cors";
 
-import initRoutes from "./initRoutes";
 import { initDependencies } from "./dependencies";
+import initRoutes from "./initRoutes";
 
 const app = Express();
 
