@@ -1,22 +1,16 @@
-import Database from "../../../config/db";
-import {
-  DataBaseConnectionError,
-  EntityNotFound,
-} from "../../helper/exceptions";
+import Database from "../../config/db";
+import { DataBaseConnectionError, EntityNotFound } from "../helper/exceptions";
+import { Repository } from "./Repository";
 
-import { Repository } from "../repository/repository";
+// interface Service<E> {
+//   getEntity(id: string): Promise<E>;
+//   getAllEntities(): Promise<E[]>;
+//   saveEntity(entity: E): Promise<E>;
+//   updateEntity(id: string, entity: E);
+//   deleteEntity(id: string);
+// }
 
-interface EntityService<E> {
-  getEntity(id: string): Promise<E>;
-  getAllEntities(): Promise<E[]>;
-  addEntity(entity: E): Promise<E>;
-  updateEntity(id: string, entity: E);
-  deleteEntity(id: string);
-}
-
-class EntityServiceImpl<E, T extends Repository<E>>
-  implements EntityService<E>
-{
+class Service<E, T extends Repository<E>> {
   protected entityRepository: T;
   protected entityName: string = "";
 
@@ -48,12 +42,12 @@ class EntityServiceImpl<E, T extends Repository<E>>
     return users;
   }
 
-  async addEntity(entity: E) {
+  async saveEntity(entity: E) {
     let db = await Database.getDb();
     if (!db) {
       throw new DataBaseConnectionError();
     }
-    await this.entityRepository.add(entity, db);
+    await this.entityRepository.save(entity, db);
     return entity;
   }
 
@@ -82,4 +76,4 @@ class EntityServiceImpl<E, T extends Repository<E>>
   }
 }
 
-export { EntityService, EntityServiceImpl };
+export { Service };

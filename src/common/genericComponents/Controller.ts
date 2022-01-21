@@ -1,19 +1,9 @@
 import { Request, Response } from "express";
+import ResponseBodyBuilder from "../helper/responseBodyBuilder";
+import { Repository } from "./Repository";
+import { Service } from "./Service";
 
-import ResponseBodyBuilder from "../../helper/responseBodyBuilder";
-import { EntityService } from "../service/entityServive";
-
-interface EntityController<T> {
-  getEntity(request: Request, response: Response, next: any);
-  getAllEntities(request: Request, response: Response, next: any);
-  addEntity(request: Request, response: Response, next: any);
-  updateEntity(request: Request, response: Response, next: any);
-  deleteEntity(request: Request, response: Response, next: any);
-}
-
-class EntityControllerImpl<E, T extends EntityService<E>>
-  implements EntityController<E>
-{
+class Controller<E, T extends Service<E, Repository<E>>> {
   entityService: T;
 
   constructor(entityService: T) {
@@ -44,7 +34,7 @@ class EntityControllerImpl<E, T extends EntityService<E>>
   addEntity = async (request: Request, response: Response, next: any) => {
     try {
       const user: E = request.body;
-      const result = await this.entityService.addEntity(user);
+      const result = await this.entityService.saveEntity(user);
       let responseBody = new ResponseBodyBuilder<E>("", result).setStatus(201);
       return response.status(201).json(responseBody);
     } catch (error) {
@@ -76,4 +66,4 @@ class EntityControllerImpl<E, T extends EntityService<E>>
   };
 }
 
-export { EntityController, EntityControllerImpl };
+export { Controller };

@@ -1,21 +1,31 @@
+import { Service } from "../common/genericComponents/Service";
 import {
-  EntityService,
-  EntityServiceImpl,
-} from "../common/genericComponents/service/entityServive";
+  DataBaseConnectionError,
+  EntityNotFound,
+} from "../common/helper/exceptions";
+import Database from "../config/db";
 import { UserEntity } from "../entity/UserEntity";
 import {
   UserRepository,
   UserRepositoryImpl,
 } from "../repository/UserRepository";
 
-interface UserService extends EntityService<UserEntity> {}
-
-class UserServiceImpl
-  extends EntityServiceImpl<UserEntity, UserRepository<UserEntity>>
-  implements UserService
-{
+class UserService extends Service<UserEntity, UserRepository> {
   constructor() {
     super(new UserRepositoryImpl(), "user");
   }
+
+  override async getAllEntities(): Promise<UserEntity[]> {
+    const db = await Database.getDb();
+
+    if (db == null) {
+      throw new DataBaseConnectionError();
+    }
+    const result = await this.entityRepository.getAll(db);
+    if (!result) {
+      throw new EntityNotFound(this.entityName);
+    }
+    return result;
+  }
 }
-export { UserService, UserServiceImpl };
+export { UserService };

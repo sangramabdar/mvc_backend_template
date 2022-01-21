@@ -1,14 +1,11 @@
-import {
-  UserController,
-  UserControllerImpl,
-} from "../controllers/UserController";
+import { UserController } from "../controllers/UserController";
 
 type DependencyType = {
   userController: UserController;
 };
 
 let dependencies: DependencyType = {
-  userController: new UserControllerImpl(),
+  userController: new UserController(),
 };
 
 async function initDependencies() {}

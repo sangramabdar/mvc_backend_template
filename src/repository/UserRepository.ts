@@ -1,15 +1,14 @@
-import { Db } from "mongodb";
 import {
   Repository,
   RepositoryImpl,
-} from "../common/genericComponents/repository/repository";
+} from "../common/genericComponents/Repository";
 import { UserEntity } from "../entity/UserEntity";
 
-interface UserRepository<T> extends Repository<T> {}
+interface UserRepository extends Repository<UserEntity> {}
 
 class UserRepositoryImpl
   extends RepositoryImpl<UserEntity>
-  implements UserRepository<UserEntity>
+  implements UserRepository
 {
   static collection = "users";
   constructor() {
