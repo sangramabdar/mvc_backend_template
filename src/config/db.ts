@@ -19,8 +19,6 @@ class Database {
   }
 
   static async getDb(): Promise<Db | null> {
-    console.log("getDb");
-
     //this is for checking db object is still alive or not
     try {
       Database.db!!.databaseName;

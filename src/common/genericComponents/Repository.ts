@@ -1,26 +1,26 @@
 import { Db, ObjectId } from "mongodb";
 
-type FilterField<T> = {
-  [K in keyof T]: 1 | 0;
+type FilterField<E> = {
+  [K in keyof E]: 1 | 0;
 };
 
-interface Repository<T> {
+interface Repository<E> {
   getById(
     id: string,
     db: Db,
-    filterFields?: FilterField<Partial<T>> | {}
-  ): Promise<T | null>;
+    filterFields?: FilterField<Partial<E>> | {}
+  ): Promise<E | null>;
   getAll(
     db: Db,
-    filterFields?: FilterField<Partial<T>> | {}
-  ): Promise<T[] | null>;
-  save(element: T, db: Db): Promise<T>;
-  updateById(id: string, element: T, db: Db): Promise<boolean>;
+    filterFields?: FilterField<Partial<E>> | {}
+  ): Promise<E[] | null>;
+  save(element: E, db: Db): Promise<E>;
+  updateById(id: string, element: E, db: Db): Promise<boolean>;
   deleteById(id: string, db: Db): Promise<boolean>;
   deleteAll(db: Db);
 }
 
-class RepositoryImpl<T> implements Repository<T> {
+class RepositoryImpl<E> implements Repository<E> {
   protected _collection: string;
 
   constructor(collection: string) {
@@ -30,8 +30,8 @@ class RepositoryImpl<T> implements Repository<T> {
   async getById(
     id: string,
     db: Db,
-    filterFields: FilterField<Partial<T>> | {} = {}
-  ): Promise<T | null> {
+    filterFields: FilterField<Partial<E>> | {} = {}
+  ): Promise<E | null> {
     const _id = new ObjectId(id);
 
     const getResult = await db.collection(this._collection).findOne(
@@ -43,13 +43,13 @@ class RepositoryImpl<T> implements Repository<T> {
     if (!getResult) {
       return null;
     }
-    return getResult as T;
+    return getResult as E;
   }
 
   async getAll(
     db: Db,
-    filterFields: FilterField<Partial<T>> | {} = {}
-  ): Promise<T[] | null> {
+    filterFields: FilterField<Partial<E>> | {} = {}
+  ): Promise<E[] | null> {
     const users = await db
       .collection(this._collection)
       .find(
@@ -62,14 +62,14 @@ class RepositoryImpl<T> implements Repository<T> {
     if (users.length === 0) {
       return null;
     }
-    return users as T[];
+    return users as E[];
   }
 
   async getSpecificFields(
     id: string,
-    filterFields: FilterField<T>,
+    filterFields: FilterField<E>,
     db: Db
-  ): Promise<T | null> {
+  ): Promise<E | null> {
     const _id = new ObjectId(id);
     const result = await db.collection(this._collection).findOne(
       { _id },
@@ -83,19 +83,19 @@ class RepositoryImpl<T> implements Repository<T> {
     if (result == null) {
       return null;
     }
-    return result as T;
+    return result as E;
   }
 
-  async save(element: T, db: Db) {
+  async save(element: E, db: Db) {
     const insertOneResult = await db
       .collection(this._collection)
       .insertOne(element);
     return element;
   }
 
-  async updateById(id: string, element: T, db: Db): Promise<boolean> {
+  async updateById(id: string, element: E, db: Db): Promise<boolean> {
     const _id = new ObjectId(id);
-    const updateResult = await db.collection<T>(this._collection).updateOne(
+    const updateResult = await db.collection<E>(this._collection).updateOne(
       {},
       {
         $set: element,

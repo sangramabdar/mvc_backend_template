@@ -21,7 +21,23 @@ class UserService extends Service<UserEntity, UserRepository> {
     if (db == null) {
       throw new DataBaseConnectionError();
     }
-    const result = await this.entityRepository.getAll(db);
+    const result = await this.entityRepository.getAll(db, {});
+    if (!result) {
+      throw new EntityNotFound(this.entityName);
+    }
+    return result;
+  }
+
+  //buisness logic for user , that is why parent method is overridden here.
+  override async getEntity(id: string): Promise<UserEntity> {
+    const db = await Database.getDb();
+
+    if (db == null) {
+      throw new DataBaseConnectionError();
+    }
+    const result = await this.entityRepository.getById(id, db, {
+      email: 0,
+    });
     if (!result) {
       throw new EntityNotFound(this.entityName);
     }
