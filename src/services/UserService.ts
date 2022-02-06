@@ -1,4 +1,4 @@
-import { Service } from "../common/genericComponents/Service";
+import { CrudService } from "../common/genericComponents/Service";
 import {
   DataBaseConnectionError,
   EntityNotFound,
@@ -10,7 +10,7 @@ import {
   UserRepositoryImpl,
 } from "../repository/UserRepository";
 
-class UserService extends Service<UserEntity, UserRepository> {
+class UserService extends CrudService<UserEntity, UserRepository> {
   constructor() {
     super(new UserRepositoryImpl(), "user");
   }
@@ -35,9 +35,7 @@ class UserService extends Service<UserEntity, UserRepository> {
     if (db == null) {
       throw new DataBaseConnectionError();
     }
-    const result = await this.entityRepository.getById(id, db, {
-      email: 0,
-    });
+    const result = await this.entityRepository.getById(id, db);
     if (!result) {
       throw new EntityNotFound(this.entityName);
     }

@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import ResponseBodyBuilder from "../helper/responseBodyBuilder";
-import { Repository } from "./Repository";
-import { Service } from "./Service";
+import { CrudRepository } from "./Repository";
+import { CrudService } from "./Service";
 
-class Controller<E, T extends Service<E, Repository<E>>> {
+class CrudController<E, T extends CrudService<E, CrudRepository<E>>> {
   entityService: T;
 
   constructor(entityService: T) {
@@ -66,4 +66,4 @@ class Controller<E, T extends Service<E, Repository<E>>> {
   };
 }
 
-export { Controller };
+export { CrudController };

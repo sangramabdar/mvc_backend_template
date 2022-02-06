@@ -4,7 +4,7 @@ type FilterField<E> = {
   [K in keyof E]: 1 | 0;
 };
 
-interface Repository<E> {
+interface CrudRepository<E> {
   getById(
     id: string,
     db: Db,
@@ -20,7 +20,7 @@ interface Repository<E> {
   deleteAll(db: Db);
 }
 
-class RepositoryImpl<E> implements Repository<E> {
+class CrudRepositoryImpl<E> implements CrudRepository<E> {
   protected _collection: string;
 
   constructor(collection: string) {
@@ -96,7 +96,7 @@ class RepositoryImpl<E> implements Repository<E> {
   async updateById(id: string, element: E, db: Db): Promise<boolean> {
     const _id = new ObjectId(id);
     const updateResult = await db.collection<E>(this._collection).updateOne(
-      {},
+      { _id },
       {
         $set: element,
       }
@@ -125,4 +125,4 @@ class RepositoryImpl<E> implements Repository<E> {
   }
 }
 
-export { Repository, RepositoryImpl };
+export { CrudRepository, CrudRepositoryImpl };

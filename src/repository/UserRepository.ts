@@ -1,13 +1,13 @@
 import {
-  Repository,
-  RepositoryImpl,
+  CrudRepository,
+  CrudRepositoryImpl,
 } from "../common/genericComponents/Repository";
 import { UserEntity } from "../entity/UserEntity";
 
-interface UserRepository extends Repository<UserEntity> {}
+interface UserRepository extends CrudRepository<UserEntity> {}
 
 class UserRepositoryImpl
-  extends RepositoryImpl<UserEntity>
+  extends CrudRepositoryImpl<UserEntity>
   implements UserRepository
 {
   static collection = "users";

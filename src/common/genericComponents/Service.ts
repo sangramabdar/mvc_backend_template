@@ -1,6 +1,6 @@
 import Database from "../../config/db";
 import { DataBaseConnectionError, EntityNotFound } from "../helper/exceptions";
-import { Repository } from "./Repository";
+import { CrudRepository } from "./Repository";
 
 // interface Service<E> {
 //   getEntity(id: string): Promise<E>;
@@ -10,7 +10,7 @@ import { Repository } from "./Repository";
 //   deleteEntity(id: string);
 // }
 
-class Service<E, T extends Repository<E>> {
+class CrudService<E, T extends CrudRepository<E>> {
   protected entityRepository: T;
   protected entityName: string = "";
 
@@ -76,4 +76,4 @@ class Service<E, T extends Repository<E>> {
   }
 }
 
-export { Service };
+export { CrudService };
