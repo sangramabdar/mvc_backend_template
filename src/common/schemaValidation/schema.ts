@@ -181,7 +181,7 @@ class NumberSchema extends Schema<number> {
 }
 
 async function validateSchema<T>(
-  entity: {},
+  schema: {},
   body: {},
   operation: "complete" | "partial"
 ): Promise<{}> {
@@ -189,13 +189,13 @@ async function validateSchema<T>(
 
   switch (operation) {
     case "complete":
-      var keys = Object.keys(entity);
+      var keys = Object.keys(schema);
 
       for (let key of keys) {
         if (!(key in body)) {
           throw new Error(`${key} must be there`);
         }
-        entity[key].validate(body[key]);
+        schema[key].validate(body[key]);
         newObject[key] = body[key];
       }
       break;
@@ -204,8 +204,8 @@ async function validateSchema<T>(
       var keys = Object.keys(body);
 
       for (let key of keys) {
-        if (key in entity) {
-          entity[key].validate(body[key]);
+        if (key in schema) {
+          schema[key].validate(body[key]);
           newObject[key] = body[key];
         }
       }
