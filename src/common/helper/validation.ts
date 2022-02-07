@@ -29,34 +29,68 @@ async function validateBody(req: Request, res: Response, next) {
 async function validateToken(req: Request, res: Response, next) {
   try {
     const token = req.headers["authorization"];
-    if (!token) throw new Error("token is not provided in header");
+
+    if (!token)
+      return next(new Error("authorization header  is not provided in header"));
+
     const tokenPart = token.split(" ")[1];
-    if (!tokenPart) {
-      throw new Error("token is not in correct format");
-    }
-    const data = await jwt.verify(tokenPart, process.env.ACCESS_KEY!!);
+
+    if (!tokenPart)
+      return next(new Error("authorization header is not in correct format"));
+
+    await verifyAccessToken(tokenPart);
     return res.json({ token: "token is valid" });
   } catch (error) {
     next(error);
   }
 }
 
-async function generateAccessToken(req: Request, res: Response, next) {
+async function generateAccessToken(payload: any, expiresIn: string) {
+  const accessToken = await jwt.sign(payload, process.env.ACCESS_KEY!!, {
+    expiresIn,
+  });
+  return accessToken;
+}
+
+async function generateRefreshToken(payload: any, expiresIn: string) {
+  const refreshToken = await jwt.sign(payload, process.env.REFRESH_KEY!!, {
+    expiresIn,
+  });
+  return refreshToken;
+}
+
+async function verifyAccessToken(token: string): Promise<jwt.JwtPayload> {
+  const data = await jwt.verify(token, process.env.ACCESS_KEY!!);
+  delete data.iat;
+  delete data.exp;
+  return data;
+}
+
+async function verfiyRefreshToken(token: string): Promise<jwt.JwtPayload> {
+  const data = await jwt.verify(token, process.env.REFRESH_KEY!!);
+  delete data.iat;
+  delete data.exp;
+  return data;
+}
+
+async function generate(req: Request, res: Response, next) {
   try {
     const { token } = req.body;
-    const data = await jwt.verify(token, process.env.REFRESH_KEY!!);
 
-    //deleting unnecessary fields
-    delete data.iat;
-    delete data.exp;
+    const data = await verfiyRefreshToken(token);
+    const accessToken = await generateAccessToken(data, "1m");
 
-    const accessToken = await jwt.sign(data, process.env.ACCESS_KEY!!, {
-      expiresIn: "30s",
-    });
     return res.json({ accessToken });
   } catch (error) {
     next(error);
   }
 }
 
-export { validateId, validateBody, validateToken, generateAccessToken };
+export {
+  validateId,
+  validateBody,
+  validateToken,
+  generateAccessToken,
+  generate,
+  generateRefreshToken,
+};

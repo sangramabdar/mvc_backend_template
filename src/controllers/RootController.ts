@@ -1,5 +1,9 @@
 import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
+
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../common/helper/validation";
 
 import RootService from "../services/RootService";
 
@@ -40,12 +44,8 @@ class RootController {
       //   return res.json({ error: "not found" });
       // }
 
-      const accessToken = await jwt.sign(data, process.env.ACCESS_KEY!!, {
-        expiresIn: "30s",
-      });
-      let refreshToken = await jwt.sign(data, process.env.REFRESH_KEY!!, {
-        expiresIn: "1d",
-      });
+      const accessToken = await generateAccessToken(data, "30s");
+      let refreshToken = await generateRefreshToken(data, "1d");
       // const v = await RootController.c.get(data.email);
       // if (!v) {
       //   console.log("called");
