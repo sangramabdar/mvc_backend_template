@@ -1,13 +1,11 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import configure from "../config";
-import Database from "../config/db";
+
 import RootService from "../services/RootService";
 
 class RootController {
   private static appService: RootService = new RootService();
 
-  private static secretKey: string = "123";
   static async get(req: Request, res: Response) {
     const result = await RootController.appService.getApp();
     return res.send("app");
@@ -17,39 +15,45 @@ class RootController {
     return res.sendStatus(404);
   }
 
-  static async accessRoute(req: Request, res: Response, next) {
-    try {
-      const { token } = req.body;
-      const data = await jwt.verify(token, configure.jwtSecretKey!!);
-      return res.json(data);
-    } catch (error) {
-      next(error);
-    }
-  }
-
   static async loginRoute(req: Request, res: Response, next) {
     try {
-      const data = req.body;
-      const db = await Database.getDb();
-      const d = await db?.collection("users").findOne(
-        {
-          email: data.email,
-          password: data.password,
-        },
-        {
-          projection: {
-            id: 0,
-          },
-        }
-      );
+      // if (!RootController.c.isOpen) {
+      //   await RootController.c.connect();
+      // }
 
-      if (!d) {
-        res.statusCode = 400;
-        return res.json({ error: "not found" });
-      }
+      const data: { email: string; password: string } = req.body;
+      // const db = await Database.getDb();
+      // const d = await db?.collection("users").findOne(
+      //   {
+      //     email: data.email,
+      //     password: data.password,
+      //   },
+      //   {
+      //     projection: {
+      //       id: 0,
+      //     },
+      //   }
+      // );
 
-      const token = await jwt.sign(d, configure.jwtSecretKey!!);
-      return res.json({ token });
+      // if (!d) {
+      //   res.statusCode = 400;
+      //   return res.json({ error: "not found" });
+      // }
+
+      const accessToken = await jwt.sign(data, process.env.ACCESS_KEY!!, {
+        expiresIn: "30s",
+      });
+      let refreshToken = await jwt.sign(data, process.env.REFRESH_KEY!!, {
+        expiresIn: "1d",
+      });
+      // const v = await RootController.c.get(data.email);
+      // if (!v) {
+      //   console.log("called");
+      //   await RootController.c.set(data.email, refreshToken);
+      // } else {
+      //   refreshToken = v;
+      // }
+      return res.json({ accessToken, refreshToken });
     } catch (error) {
       next(error);
     }
