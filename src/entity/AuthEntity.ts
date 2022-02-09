@@ -4,10 +4,8 @@ import {
   StringSchema,
   validateSchema,
 } from "../common/schemaValidation/schema";
-import AuthController from "../controllers/AuthController";
-import BaseEntity from "./BaseEntity";
 
-interface AuthEntity extends BaseEntity {
+interface AuthEntity {
   email: string;
   password: string;
 }
