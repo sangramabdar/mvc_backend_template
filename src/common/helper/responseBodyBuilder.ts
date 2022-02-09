@@ -1,4 +1,4 @@
-class ResponseBodyBuilder<T> {
+class ResponseBodyBuilder<T = any> {
   private timeStamp: number;
   private error: string;
   private status: number;

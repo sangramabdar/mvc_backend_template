@@ -31,7 +31,7 @@ async function validateToken(req: Request, res: Response, next) {
     const token = req.headers["authorization"];
 
     if (!token)
-      return next(new Error("authorization header  is not provided in header"));
+      return next(new Error("authorization header is not provided in header"));
 
     const tokenPart = token.split(" ")[1];
 
@@ -39,23 +39,34 @@ async function validateToken(req: Request, res: Response, next) {
       return next(new Error("authorization header is not in correct format"));
 
     await verifyAccessToken(tokenPart);
-    return res.json({ token: "token is valid" });
   } catch (error) {
     next(error);
   }
 }
 
-async function generateAccessToken(payload: any, expiresIn: string) {
-  const accessToken = await jwt.sign(payload, process.env.ACCESS_KEY!!, {
-    expiresIn,
-  });
+async function generateAccessToken(payload: any, expiresIn: string = "") {
+  let accessToken;
+  if (expiresIn == "") {
+    accessToken = await jwt.sign(payload, process.env.ACCESS_KEY!!);
+  } else {
+    accessToken = await jwt.sign(payload, process.env.ACCESS_KEY!!, {
+      expiresIn,
+    });
+  }
+
   return accessToken;
 }
 
-async function generateRefreshToken(payload: any, expiresIn: string) {
-  const refreshToken = await jwt.sign(payload, process.env.REFRESH_KEY!!, {
-    expiresIn,
-  });
+async function generateRefreshToken(payload: any, expiresIn: string = "") {
+  let refreshToken;
+  if (expiresIn == "") {
+    refreshToken = await jwt.sign(payload, process.env.REFRESH_KEY!!);
+  } else {
+    refreshToken = await jwt.sign(payload, process.env.REFRESH_KEY!!, {
+      expiresIn,
+    });
+  }
+
   return refreshToken;
 }
 
@@ -75,6 +86,7 @@ async function verfiyRefreshToken(token: string): Promise<jwt.JwtPayload> {
 
 async function generate(req: Request, res: Response, next) {
   try {
+    console.log("next");
     const { token } = req.body;
 
     const data = await verfiyRefreshToken(token);

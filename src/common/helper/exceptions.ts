@@ -18,4 +18,24 @@ class WrongContent extends Error {
   }
 }
 
-export { DataBaseConnectionError, EntityNotFound, WrongContent };
+class EmailExist extends Error {
+  private static message: string = "email already exists";
+  constructor() {
+    super(EmailExist.message);
+  }
+}
+
+class NotRegistered extends Error {
+  private static message: string = "email is not registered";
+  constructor() {
+    super(NotRegistered.message);
+  }
+}
+
+export {
+  DataBaseConnectionError,
+  EntityNotFound,
+  WrongContent,
+  EmailExist,
+  NotRegistered,
+};

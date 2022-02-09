@@ -8,6 +8,4 @@ let dependencies: DependencyType = {
   userController: new UserController(),
 };
 
-async function initDependencies() {}
-
-export { dependencies, initDependencies };
+export default dependencies;

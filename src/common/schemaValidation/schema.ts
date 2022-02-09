@@ -101,7 +101,7 @@ class StringSchema extends Schema<string> {
     this.maxLength = length;
     this.callbacks.push({
       callback: this.#max,
-      error: `name should contain at most ${length} characters,`,
+      error: `${this.key} should contain at most ${length} characters,`,
     });
     return this;
   }
@@ -110,7 +110,7 @@ class StringSchema extends Schema<string> {
     this.minLength = length;
     this.callbacks.push({
       callback: this.#min,
-      error: `name should contain at least ${length} characters,`,
+      error: `${this.key} should contain at least ${length} characters,`,
     });
     return this;
   }
