@@ -1,7 +1,7 @@
 import { hash, compare } from "bcryptjs";
 import {
   DataBaseConnectionError,
-  EmailExist,
+  EmailExists,
   NotRegistered,
 } from "../common/helper/exceptions";
 import Database from "../config/db";
@@ -20,7 +20,7 @@ async function signUpService(authEntity: AuthEntity) {
   });
 
   if (user) {
-    throw new EmailExist();
+    throw new EmailExists();
   }
 
   const hashPassword = await hash(password, 10);
@@ -57,15 +57,15 @@ async function loginService(authEntity: AuthEntity) {
     throw new NotRegistered();
   }
 
-  const user = result as AuthEntity;
-
-  const isMatched = await compare(password, user.password);
+  const isMatched = await compare(password, result.password);
 
   if (!isMatched) {
     throw new Error("password is not matched");
   }
-
-  return { email: user.email };
+  
+  delete result.password;
+  
+  return result
 }
 
 export { signUpService, loginService };

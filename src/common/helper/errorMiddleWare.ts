@@ -12,16 +12,16 @@ async function statusCodeHandler(
   response: Response
 ) {
   if (error instanceof DataBaseConnectionError) {
-    responseBody.setStatus(500);
+    responseBody.setStatusCode(500);
     response.statusCode = 500;
   } else if (error instanceof EntityNotFound) {
-    responseBody.setStatus(404);
+    responseBody.setStatusCode(404);
     response.statusCode = 404;
   } else if (error instanceof WrongContent) {
-    responseBody.setStatus(422);
+    responseBody.setStatusCode(422);
     response.statusCode = 422;
   } else {
-    responseBody.setStatus(400);
+    responseBody.setStatusCode(400);
     response.statusCode = 400;
   }
 }

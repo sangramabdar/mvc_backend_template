@@ -84,25 +84,14 @@ async function verfiyRefreshToken(token: string): Promise<jwt.JwtPayload> {
   return data;
 }
 
-async function generate(req: Request, res: Response, next) {
-  try {
-    console.log("next");
-    const { token } = req.body;
 
-    const data = await verfiyRefreshToken(token);
-    const accessToken = await generateAccessToken(data, "1m");
-
-    return res.json({ accessToken });
-  } catch (error) {
-    next(error);
-  }
-}
 
 export {
   validateId,
   validateBody,
   validateToken,
   generateAccessToken,
-  generate,
   generateRefreshToken,
+  verfiyRefreshToken,
+  verifyAccessToken
 };

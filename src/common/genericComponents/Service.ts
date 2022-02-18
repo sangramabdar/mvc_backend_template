@@ -2,14 +2,6 @@ import Database from "../../config/db";
 import { DataBaseConnectionError, EntityNotFound } from "../helper/exceptions";
 import { CrudRepository } from "./Repository";
 
-// interface Service<E> {
-//   getEntity(id: string): Promise<E>;
-//   getAllEntities(): Promise<E[]>;
-//   saveEntity(entity: E): Promise<E>;
-//   updateEntity(id: string, entity: E);
-//   deleteEntity(id: string);
-// }
-
 class CrudService<E, T extends CrudRepository<E>> {
   protected entityRepository: T;
   protected entityName: string = "";

@@ -43,6 +43,7 @@ class CrudRepositoryImpl<E> implements CrudRepository<E> {
     if (!getResult) {
       return null;
     }
+
     return getResult as E;
   }
 
@@ -63,27 +64,6 @@ class CrudRepositoryImpl<E> implements CrudRepository<E> {
       return null;
     }
     return users as E[];
-  }
-
-  async getSpecificFields(
-    id: string,
-    filterFields: FilterField<E>,
-    db: Db
-  ): Promise<E | null> {
-    const _id = new ObjectId(id);
-    const result = await db.collection(this._collection).findOne(
-      { _id },
-      {
-        projection: {
-          ...filterFields,
-        },
-      }
-    );
-
-    if (result == null) {
-      return null;
-    }
-    return result as E;
   }
 
   async save(element: E, db: Db) {
@@ -116,7 +96,6 @@ class CrudRepositoryImpl<E> implements CrudRepository<E> {
     if (deleteResult.deletedCount == 0) {
       return false;
     }
-
     return true;
   }
 

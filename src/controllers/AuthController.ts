@@ -20,12 +20,11 @@ class AuthController {
       const refreshToken = await generateRefreshToken(doc);
 
       const responseBody = new ResponseBodyBuilder()
-        .setStatus(200)
+        .setStatusCode(200)
         .setPayload({ accessToken, refreshToken });
 
       return res.status(200).json(responseBody);
     } catch (error) {
-      console.log("login");
       next(error);
     }
   }
@@ -37,7 +36,7 @@ class AuthController {
       const result = await signUpService(authEntity);
 
       const responseBody = new ResponseBodyBuilder<string>()
-        .setStatus(201)
+        .setStatusCode(201)
         .setPayload(result);
 
       return res.status(201).json(responseBody);

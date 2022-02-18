@@ -35,7 +35,9 @@ class CrudController<E, T extends CrudService<E, CrudRepository<E>>> {
     try {
       const user: E = request.body;
       const result = await this.entityService.saveEntity(user);
-      let responseBody = new ResponseBodyBuilder<E>("", result).setStatus(201);
+      let responseBody = new ResponseBodyBuilder<E>("", result).setStatusCode(
+        201
+      );
       return response.status(201).json(responseBody);
     } catch (error) {
       next(error);

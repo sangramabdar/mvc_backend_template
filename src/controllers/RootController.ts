@@ -17,7 +17,6 @@ class RootController {
   }
 
   static async wrongRoute(req: Request, res: Response) {
-    console.log("wrong route");
     return res.sendStatus(404);
   }
 }
