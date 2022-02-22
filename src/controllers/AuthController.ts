@@ -3,7 +3,6 @@ import { Request } from "express";
 
 import ResponseBodyBuilder from "../common/helper/responseBodyBuilder";
 import { generateAccessToken } from "../common/helper/validation";
-import { AuthEntity } from "../entity/AuthEntity";
 
 import { loginService, signUpService } from "../services/AuthService";
 

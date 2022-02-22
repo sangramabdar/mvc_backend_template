@@ -80,7 +80,6 @@ async function verfiyRefreshToken(token: string): Promise<jwt.JwtPayload> {
 async function validateAccess(req: Request, res: Response, next) {
   const id = req.params["id"];
   const user = req.body.user;
-  console.log(req.body);
   if (id !== user._id) {
     return next(new Error("this token can not be used to access this route"));
   }
