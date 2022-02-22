@@ -25,11 +25,12 @@ const UserSchema = SchemaObject<UserEntity>({
 
 async function validateUserSchema(request: Request, response: Response, next) {
   try {
-    if (request.method === "POST") {
-      request.body = await validateSchema(UserSchema, request.body, "complete");
-    } else {
-      request.body = await validateSchema(UserSchema, request.body, "partial");
-    }
+    // if (request.method === "POST") {
+    //   request.body = await validateSchema(UserSchema, request.body, "complete");
+    // } else {
+    //   request.body = await validateSchema(UserSchema, request.body, "partial");
+    // }
+    request.body = await validateSchema(UserSchema, request.body, "partial");
     next();
   } catch (error) {
     next(error);

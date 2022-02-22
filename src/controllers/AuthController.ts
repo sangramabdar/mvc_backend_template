@@ -2,10 +2,8 @@ import { Response } from "express";
 import { Request } from "express";
 
 import ResponseBodyBuilder from "../common/helper/responseBodyBuilder";
-import {
-  generateAccessToken,
-  generateRefreshToken,
-} from "../common/helper/validation";
+import { generateAccessToken } from "../common/helper/validation";
+import { AuthEntity } from "../entity/AuthEntity";
 
 import { loginService, signUpService } from "../services/AuthService";
 
@@ -14,14 +12,13 @@ class AuthController {
     try {
       const authEntity = req.body;
 
-      const doc = await loginService(authEntity);
+      const user = await loginService(authEntity);
 
-      const accessToken = await generateAccessToken(doc);
-      const refreshToken = await generateRefreshToken(doc);
+      const accessToken = await generateAccessToken(user);
 
       const responseBody = new ResponseBodyBuilder()
         .setStatusCode(200)
-        .setPayload({ accessToken, refreshToken });
+        .setPayload({ accessToken, _id: user._id });
 
       return res.status(200).json(responseBody);
     } catch (error) {
@@ -35,7 +32,7 @@ class AuthController {
 
       const result = await signUpService(authEntity);
 
-      const responseBody = new ResponseBodyBuilder<string>()
+      const responseBody = new ResponseBodyBuilder()
         .setStatusCode(201)
         .setPayload(result);
 

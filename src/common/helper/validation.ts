@@ -1,29 +1,20 @@
 import { Request, Response } from "express";
 import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
-import { WrongContent } from "./exceptions";
 
 async function validateId(req: Request, res: Response, next) {
-  try {
-    var id = req.params["id"];
-    var isValid = ObjectId.isValid(id);
-    if (!isValid) {
-      throw new WrongContent("id is in wrong format");
-    }
-    next();
-  } catch (error) {
-    next(error);
+  let id = req.params["id"];
+  let isValid = ObjectId.isValid(id);
+  if (!isValid) {
+    return next(new Error("id is in wrong format"));
   }
+  next();
 }
 
 async function validateBody(req: Request, res: Response, next) {
-  try {
-    if (Object.keys(req.body).length == 0)
-      throw new Error("body should not be empty");
-    next();
-  } catch (error) {
-    next(error);
-  }
+  if (Object.keys(req.body).length == 0)
+    return next(new Error("body should not be empty"));
+  next();
 }
 
 async function validateToken(req: Request, res: Response, next) {
@@ -38,9 +29,11 @@ async function validateToken(req: Request, res: Response, next) {
     if (!tokenPart)
       return next(new Error("authorization header is not in correct format"));
 
-    await verifyAccessToken(tokenPart);
+    const data = await verifyAccessToken(tokenPart);
+    req.body.user = data;
+    next();
   } catch (error) {
-    next(error);
+    next(new Error("token is invalid"));
   }
 }
 
@@ -84,7 +77,16 @@ async function verfiyRefreshToken(token: string): Promise<jwt.JwtPayload> {
   return data;
 }
 
-
+async function validateAccess(req: Request, res: Response, next) {
+  const id = req.params["id"];
+  const user = req.body.user;
+  console.log(req.body);
+  if (id !== user._id) {
+    return next(new Error("this token can not be used to access this route"));
+  }
+  delete req.body.user;
+  next();
+}
 
 export {
   validateId,
@@ -93,5 +95,6 @@ export {
   generateAccessToken,
   generateRefreshToken,
   verfiyRefreshToken,
-  verifyAccessToken
+  verifyAccessToken,
+  validateAccess,
 };

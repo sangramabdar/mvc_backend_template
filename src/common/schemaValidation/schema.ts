@@ -209,6 +209,10 @@ async function validateSchema<T>(
           newObject[key] = body[key];
         }
       }
+      let l = Object.keys(newObject).length;
+      if (l == 0) {
+        throw new Error("provide valid information");
+      }
       break;
   }
   return newObject;

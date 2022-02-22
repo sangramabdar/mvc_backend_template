@@ -15,7 +15,7 @@ async function signUpService(authEntity: AuthEntity) {
     throw new DataBaseConnectionError();
   }
 
-  const user = await db.collection("users").findOne({
+  let user = await db.collection("users").findOne({
     email,
   });
 
@@ -25,12 +25,15 @@ async function signUpService(authEntity: AuthEntity) {
 
   const hashPassword = await hash(password, 10);
 
-  await db.collection("users").insertOne({
+  let result = await db.collection("users").insertOne({
     email,
     password: hashPassword,
   });
 
-  return "registered";
+  return {
+    _id: result.insertedId,
+    email: authEntity.email,
+  };
 }
 
 async function loginService(authEntity: AuthEntity) {
@@ -41,7 +44,7 @@ async function loginService(authEntity: AuthEntity) {
     throw new DataBaseConnectionError();
   }
 
-  const result = await db.collection("users").findOne(
+  const user = await db.collection("users").findOne(
     {
       email,
     },
@@ -53,19 +56,19 @@ async function loginService(authEntity: AuthEntity) {
     }
   );
 
-  if (!result) {
+  if (!user) {
     throw new NotRegistered();
   }
 
-  const isMatched = await compare(password, result.password);
+  const isMatched = await compare(password, user.password);
 
   if (!isMatched) {
     throw new Error("password is not matched");
   }
-  
-  delete result.password;
-  
-  return result
+
+  delete user.password;
+
+  return user;
 }
 
 export { signUpService, loginService };

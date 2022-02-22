@@ -2,7 +2,7 @@ import { Db, MongoClient } from "mongodb";
 
 class Database {
   private static readonly URL = "mongodb://localhost:27017";
-  private static readonly DB_NAME = "practice-expressjs";
+  private static readonly DB_NAME = "Todo";
   private static db: Db | null = null;
   private static mongoClient: MongoClient = new MongoClient(Database.URL, {
     serverSelectionTimeoutMS: 2000,
