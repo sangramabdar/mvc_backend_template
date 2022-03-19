@@ -8,19 +8,17 @@ import {
 import BaseEntity from "./BaseEntity";
 
 interface UserEntity extends BaseEntity {
-  name: string;
-  age: number;
-  address: string;
-  gender: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
 }
 
 const UserSchema = SchemaObject<UserEntity>({
-  name: new StringSchema("name").max(10).min(5).onlyAplhabates(),
-  age: new NumberSchema("age").notNegative().min(18).max(100),
-  gender: new StringSchema("gender").of(["male", "female"]),
+  firstName: new StringSchema("firstName").min(5).max(20).onlyAlphabets(),
+  lastName: new StringSchema("lastName").min(5).max(20).onlyAlphabets(),
   email: new StringSchema("email").email(),
+  password: new StringSchema("password").min(8).max(20),
 });
 
 async function validateUserSchema(request: Request, response: Response, next) {

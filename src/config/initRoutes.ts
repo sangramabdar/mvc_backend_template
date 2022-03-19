@@ -1,5 +1,5 @@
 import UserRouter from "../routes/user";
-import { app } from "./initserver";
+import { app } from "./initServer";
 import { errorHandlingMiddleWare } from "../common/helper/errorMiddleWare";
 import RootController from "../controllers/RootController";
 import RootRouter from "../routes/root";

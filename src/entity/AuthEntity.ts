@@ -6,14 +6,37 @@ import {
 } from "../common/schemaValidation/schema";
 
 interface AuthEntity {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}
+
+interface LoginEntity {
   email: string;
   password: string;
 }
 
 const AuthSchema = SchemaObject<AuthEntity>({
+  firstName: new StringSchema("firstName").min(5).max(20).onlyAplhabates(),
+  lastName: new StringSchema("lastName").min(5).max(20).onlyAplhabates(),
   email: new StringSchema("email").email(),
   password: new StringSchema("password").min(8).max(20),
 });
+
+const LoginSchema = SchemaObject<LoginEntity>({
+  email: new StringSchema("email").email(),
+  password: new StringSchema("password").min(8).max(20),
+});
+
+async function validateLoginSchema(req: Request, res: Response, next) {
+  try {
+    req.body = await validateSchema(LoginSchema, req.body, "complete");
+    next();
+  } catch (error) {
+    next(error);
+  }
+}
 
 async function validateAuthSchema(req: Request, res: Response, next) {
   try {
@@ -24,4 +47,11 @@ async function validateAuthSchema(req: Request, res: Response, next) {
   }
 }
 
-export { validateAuthSchema, AuthEntity, AuthSchema };
+export {
+  validateAuthSchema,
+  AuthEntity,
+  LoginEntity,
+  AuthSchema,
+  LoginSchema,
+  validateLoginSchema,
+};

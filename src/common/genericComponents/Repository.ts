@@ -33,7 +33,6 @@ class CrudRepositoryImpl<E> implements CrudRepository<E> {
     filterFields: FilterField<Partial<E>> | {} = {}
   ): Promise<E | null> {
     const _id = new ObjectId(id);
-
     const getResult = await db.collection(this._collection).findOne(
       { _id },
       {
@@ -70,7 +69,10 @@ class CrudRepositoryImpl<E> implements CrudRepository<E> {
     const insertOneResult = await db
       .collection(this._collection)
       .insertOne(element);
-    return element;
+    const entity = await db
+      .collection(this._collection)
+      .findOne({ _id: insertOneResult.insertedId });
+    return entity as E;
   }
 
   async updateById(id: string, element: E, db: Db): Promise<boolean> {

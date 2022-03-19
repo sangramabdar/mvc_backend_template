@@ -5,7 +5,8 @@ import {
   NotRegistered,
 } from "../common/helper/exceptions";
 import Database from "../config/db";
-import { AuthEntity } from "../entity/AuthEntity";
+import { AuthEntity, LoginEntity } from "../entity/AuthEntity";
+import { UserEntity } from "../entity/UserEntity";
 
 async function signUpService(authEntity: AuthEntity) {
   const db = await Database.getDb();
@@ -26,25 +27,22 @@ async function signUpService(authEntity: AuthEntity) {
   const hashPassword = await hash(password, 10);
 
   let result = await db.collection("users").insertOne({
-    email,
+    ...authEntity,
     password: hashPassword,
   });
 
-  return {
-    _id: result.insertedId,
-    email: authEntity.email,
-  };
+  return authEntity;
 }
 
-async function loginService(authEntity: AuthEntity) {
+async function loginService(loginEntity: LoginEntity) {
   const db = await Database.getDb();
-  const { email, password } = authEntity;
+  const { email, password } = loginEntity;
 
   if (!db) {
     throw new DataBaseConnectionError();
   }
 
-  const user = await db.collection("users").findOne(
+  const user = (await db.collection("users").findOne(
     {
       email,
     },
@@ -54,7 +52,7 @@ async function loginService(authEntity: AuthEntity) {
         password: 1,
       },
     }
-  );
+  )) as UserEntity;
 
   if (!user) {
     throw new NotRegistered();
@@ -66,9 +64,10 @@ async function loginService(authEntity: AuthEntity) {
     throw new Error("password is not matched");
   }
 
-  delete user.password;
-
-  return user;
+  return {
+    _id: user._id,
+    email: user.email,
+  };
 }
 
 export { signUpService, loginService };

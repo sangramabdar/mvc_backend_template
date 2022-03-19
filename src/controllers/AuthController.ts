@@ -1,5 +1,4 @@
-import { Response } from "express";
-import { Request } from "express";
+import { Response, Request } from "express";
 
 import ResponseBodyBuilder from "../common/helper/responseBodyBuilder";
 import { generateAccessToken } from "../common/helper/validation";

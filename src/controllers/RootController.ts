@@ -9,6 +9,12 @@ class RootController {
     console.log("wrong route");
     return res.sendStatus(404);
   }
+
+  static async successRoute(req: Request, res: Response) {
+    return res.json({
+      result: "success",
+    });
+  }
 }
 
 export default RootController;

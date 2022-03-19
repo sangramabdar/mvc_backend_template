@@ -27,7 +27,14 @@ async function statusCodeHandler(
 }
 
 async function errorHandlingMiddleWare(error, request, response, next) {
-  let responseBody = new ResponseBodyBuilder<string>(error.message);
+  let responseBody = new ResponseBodyBuilder<string>("");
+
+  if (error instanceof Error) {
+    responseBody.setPayload(error.message);
+  } else {
+    responseBody.setPayload(error);
+  }
+
   await statusCodeHandler(error, responseBody, response);
   return response.json(responseBody);
 }

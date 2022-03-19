@@ -73,7 +73,7 @@ class StringSchema extends Schema<string> {
   #max = (name: string) => name.trimStart().trimEnd().length <= this.maxLength;
   #min = (name: string) => name.trimStart().trimEnd().length >= this.minLength;
 
-  #onlyAlphabates = (name: string) => {
+  #onlyAlphabets = (name: string) => {
     let newData = name.trimStart().trimEnd();
     let format = /^[A-Za-z]+$/;
 
@@ -115,10 +115,10 @@ class StringSchema extends Schema<string> {
     return this;
   }
 
-  onlyAplhabates() {
+  onlyAlphabets() {
     this.callbacks.push({
-      callback: this.#onlyAlphabates,
-      error: `${this.key} should contain only aplphabates`,
+      callback: this.#onlyAlphabets,
+      error: `${this.key} should contain only alphabets`,
     });
     return this;
   }
@@ -201,6 +201,12 @@ async function validateSchema<T>(
       break;
 
     case "partial":
+      let l = Object.keys(newObject).length;
+
+      if (l == 0) {
+        throw new Error("provide valid information");
+      }
+
       var keys = Object.keys(body);
 
       for (let key of keys) {
@@ -208,10 +214,6 @@ async function validateSchema<T>(
           schema[key].validate(body[key]);
           newObject[key] = body[key];
         }
-      }
-      let l = Object.keys(newObject).length;
-      if (l == 0) {
-        throw new Error("provide valid information");
       }
       break;
   }
