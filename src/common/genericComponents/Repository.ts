@@ -1,4 +1,6 @@
 import { Db, ObjectId } from "mongodb";
+import Database from "../../config/db";
+import { DataBaseConnectionError } from "../helper/exceptions";
 
 type FilterField<E> = {
   [K in keyof E]: 1 | 0;
@@ -25,6 +27,13 @@ class CrudRepositoryImpl<E> implements CrudRepository<E> {
 
   constructor(collection: string) {
     this._collection = collection;
+  }
+
+  async getConnection() {
+    let db = await Database.getDb();
+    if (!db) {
+      throw new DataBaseConnectionError();
+    }
   }
 
   async getById(

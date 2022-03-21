@@ -1,4 +1,4 @@
-import { Request } from "express";
+import e, { Request } from "express";
 import Database from "../../config/db";
 import { DataBaseConnectionError, EntityNotFound } from "../helper/exceptions";
 import { CrudRepository } from "./Repository";
@@ -11,6 +11,7 @@ class CrudService<E, T extends CrudRepository<E>> {
     this.entityRepository = entityRepository;
     this.entityName = entityName;
   }
+
   async getEntity(id: string): Promise<E> {
     let db = await Database.getDb();
     if (!db) {
@@ -28,11 +29,11 @@ class CrudService<E, T extends CrudRepository<E>> {
     if (!db) {
       throw new DataBaseConnectionError();
     }
-    const users = await this.entityRepository.getAll(db);
-    if (!users) {
+    const result = await this.entityRepository.getAll(db);
+    if (!result) {
       throw new EntityNotFound(this.entityName);
     }
-    return users;
+    return result;
   }
 
   async saveEntity(entity: E, req: Request) {
@@ -40,8 +41,8 @@ class CrudService<E, T extends CrudRepository<E>> {
     if (!db) {
       throw new DataBaseConnectionError();
     }
-    entity = await this.entityRepository.save(entity, db);
-    return entity;
+    const result = await this.entityRepository.save(entity, db);
+    return result;
   }
 
   async updateEntity(id: string, entity: E, req: Request) {

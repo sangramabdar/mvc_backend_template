@@ -25,7 +25,6 @@ class CrudController<E, T extends CrudService<E, CrudRepository<E>>> {
     try {
       const result = await this.entityService.getAllEntities(request);
       let responseBody = new ResponseBodyBuilder<E[]>("", result);
-      console.log(result);
       return response.json(responseBody);
     } catch (error) {
       next(error);
@@ -34,8 +33,8 @@ class CrudController<E, T extends CrudService<E, CrudRepository<E>>> {
 
   saveEntity = async (request: Request, response: Response, next: any) => {
     try {
-      const user: E = request.body;
-      const result = await this.entityService.saveEntity(user, request);
+      const entity: E = request.body;
+      const result = await this.entityService.saveEntity(entity, request);
       let responseBody = new ResponseBodyBuilder<E>("", result).setStatusCode(
         201
       );
@@ -48,8 +47,8 @@ class CrudController<E, T extends CrudService<E, CrudRepository<E>>> {
   updateEntity = async (request: Request, response: Response, next: any) => {
     try {
       const id = request.params["id"];
-      const user: E = request.body;
-      const result = await this.entityService.updateEntity(id, user, request);
+      const entity: E = request.body;
+      const result = await this.entityService.updateEntity(id, entity, request);
       const responseBody = new ResponseBodyBuilder<string>("", result);
       return response.json(responseBody);
     } catch (error) {

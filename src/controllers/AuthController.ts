@@ -28,11 +28,11 @@ class AuthController {
     try {
       const authEntity = req.body;
 
-      const result = await signUpService(authEntity);
+      const user = await signUpService(authEntity);
 
       const responseBody = new ResponseBodyBuilder()
         .setStatusCode(201)
-        .setPayload(result);
+        .setPayload(user);
 
       return res.status(201).json(responseBody);
     } catch (error) {

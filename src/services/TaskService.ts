@@ -19,7 +19,6 @@ class TaskService extends CrudService<TaskEntity, TaskRepository> {
   }
 
   override async getAllEntities(req: Request): Promise<TaskEntity[]> {
-    console.log("task");
     let db = await Database.getDb();
     if (!db) {
       throw new DataBaseConnectionError();
@@ -39,6 +38,10 @@ class TaskService extends CrudService<TaskEntity, TaskRepository> {
       }
     );
 
+    if (!user || !user.tasks) {
+      throw new EntityNotFound(this.entityName);
+    }
+
     let tasks: TaskEntity[] = (await db
       .collection("tasks")
       .find({
@@ -47,7 +50,7 @@ class TaskService extends CrudService<TaskEntity, TaskRepository> {
       .toArray()) as TaskEntity[];
 
     if (tasks.length == 0) {
-      throw new EntityNotFound("tasks");
+      throw new EntityNotFound(this.entityName);
     }
     return tasks;
   }

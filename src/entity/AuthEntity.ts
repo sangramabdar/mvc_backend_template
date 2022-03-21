@@ -18,8 +18,8 @@ interface LoginEntity {
 }
 
 const AuthSchema = SchemaObject<AuthEntity>({
-  firstName: new StringSchema("firstName").min(5).max(20).onlyAplhabates(),
-  lastName: new StringSchema("lastName").min(5).max(20).onlyAplhabates(),
+  firstName: new StringSchema("firstName").min(5).max(20).onlyAlphabets(),
+  lastName: new StringSchema("lastName").min(5).max(20).onlyAlphabets(),
   email: new StringSchema("email").email(),
   password: new StringSchema("password").min(8).max(20),
 });
