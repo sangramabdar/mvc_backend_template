@@ -1,5 +1,5 @@
-type CallBack<T> = {
-  callback: (value: T) => boolean;
+type Filter<T> = {
+  filter: (value: T) => boolean;
   error: string;
 };
 
@@ -8,17 +8,21 @@ type SchemaType<T> = {
 };
 
 function SchemaObject<T = {}>(schema: SchemaType<Partial<T>>) {
+  let keys = Object.keys(schema);
+  for (let key of keys) {
+    schema[key].setKey(key);
+  }
   return schema;
 }
 
 class Schema<T> {
-  protected callbacks: Array<CallBack<T>> = [];
+  protected filters: Array<Filter<T>> = [];
   protected type: string = "";
   protected key: string = "";
   protected values: T[] = [];
 
-  constructor(key: string) {
-    this.key = key;
+  setKey(value: string) {
+    this.key = value;
   }
 
   validate(value: T) {
@@ -28,9 +32,9 @@ class Schema<T> {
     }
 
     //constraint validation
-    for (let { callback, error } of this.callbacks) {
-      if (!callback(value)) {
-        throw new Error(error);
+    for (let { filter, error } of this.filters) {
+      if (!filter(value)) {
+        throw new Error(this.key + error);
       }
     }
   }
@@ -53,8 +57,8 @@ class Schema<T> {
     });
 
     this.values = values;
-    this.callbacks.push({
-      callback: this.#contains,
+    this.filters.push({
+      filter: this.#contains,
       error: `${this.key} must be ${s}`,
     });
     return this;
@@ -65,8 +69,8 @@ class StringSchema extends Schema<string> {
   protected maxLength: number = 0;
   protected minLength: number = 0;
 
-  constructor(key: string) {
-    super(key);
+  constructor() {
+    super();
     this.type = "string";
   }
 
@@ -99,8 +103,8 @@ class StringSchema extends Schema<string> {
 
   max(length: number) {
     this.maxLength = length;
-    this.callbacks.push({
-      callback: this.#max,
+    this.filters.push({
+      filter: this.#max,
       error: `${this.key} should contain at most ${length} characters,`,
     });
     return this;
@@ -108,32 +112,32 @@ class StringSchema extends Schema<string> {
 
   min(length: number) {
     this.minLength = length;
-    this.callbacks.push({
-      callback: this.#min,
+    this.filters.push({
+      filter: this.#min,
       error: `${this.key} should contain at least ${length} characters,`,
     });
     return this;
   }
 
   onlyAlphabets() {
-    this.callbacks.push({
-      callback: this.#onlyAlphabets,
+    this.filters.push({
+      filter: this.#onlyAlphabets,
       error: `${this.key} should contain only alphabets`,
     });
     return this;
   }
 
   onlyDigits() {
-    this.callbacks.push({
-      callback: this.#onlyDigits,
+    this.filters.push({
+      filter: this.#onlyDigits,
       error: `${this.key} should contain only numbers`,
     });
     return this;
   }
 
   email() {
-    this.callbacks.push({
-      callback: this.#isEmail,
+    this.filters.push({
+      filter: this.#isEmail,
       error: `${this.key} must be a valid email`,
     });
     return this;
@@ -144,8 +148,8 @@ class NumberSchema extends Schema<number> {
   protected maxNumber: number = 0;
   protected minNUmber: number = 0;
 
-  constructor(key: string) {
-    super(key);
+  constructor() {
+    super();
     this.type = "number";
   }
 
@@ -155,8 +159,8 @@ class NumberSchema extends Schema<number> {
 
   max(value: number) {
     this.maxNumber = value;
-    this.callbacks.push({
-      callback: this.#max,
+    this.filters.push({
+      filter: this.#max,
       error: `${this.key} should be less than ${this.maxNumber}`,
     });
     return this;
@@ -164,16 +168,16 @@ class NumberSchema extends Schema<number> {
 
   min(value: number) {
     this.minNUmber = value;
-    this.callbacks.push({
-      callback: this.#min,
+    this.filters.push({
+      filter: this.#min,
       error: `${this.key} should be greater than ${this.minNUmber}`,
     });
     return this;
   }
 
   notNegative() {
-    this.callbacks.push({
-      callback: this.#isNotNegative,
+    this.filters.push({
+      filter: this.#isNotNegative,
       error: `${this.key} must not be negative`,
     });
     return this;
@@ -181,8 +185,8 @@ class NumberSchema extends Schema<number> {
 }
 
 async function validateSchema<T>(
-  schema: {},
-  body: {},
+  schema: T,
+  body: any,
   operation: "complete" | "partial"
 ): Promise<{}> {
   let newObject = {};
@@ -201,7 +205,7 @@ async function validateSchema<T>(
       break;
 
     case "partial":
-      let l = Object.keys(newObject).length;
+      let l = Object.keys(body).length;
 
       if (l == 0) {
         throw new Error("provide valid information");
