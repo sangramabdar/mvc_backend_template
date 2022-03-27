@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import {
-  SchemaObject,
+  BuildSchema,
   StringSchema,
   validateSchema,
 } from "../common/schemaValidation/schema";
@@ -17,16 +17,16 @@ interface LoginEntity {
   password: string;
 }
 
-const AuthSchema = SchemaObject<AuthEntity>({
-  firstName: new StringSchema("firstName").min(5).max(20).onlyAlphabets(),
-  lastName: new StringSchema("lastName").min(5).max(20).onlyAlphabets(),
-  email: new StringSchema("email").email(),
-  password: new StringSchema("password").min(8).max(20),
+const AuthSchema = BuildSchema<AuthEntity>({
+  firstName: new StringSchema().min(5).max(20).onlyAlphabets(),
+  lastName: new StringSchema().min(5).max(20).onlyAlphabets(),
+  email: new StringSchema().email(),
+  password: new StringSchema().min(8).max(20),
 });
 
-const LoginSchema = SchemaObject<LoginEntity>({
-  email: new StringSchema("email").email(),
-  password: new StringSchema("password").min(8).max(20),
+const LoginSchema = BuildSchema<LoginEntity>({
+  email: new StringSchema().email(),
+  password: new StringSchema().min(8).max(20),
 });
 
 async function validateLoginSchema(req: Request, res: Response, next) {

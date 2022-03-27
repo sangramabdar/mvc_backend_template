@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import {
-  SchemaObject,
+  BuildSchema,
   StringSchema,
   validateSchema,
 } from "../common/schemaValidation/schema";
@@ -11,9 +11,9 @@ interface TaskEntity extends BaseEntity {
   description: string;
 }
 
-const TasKSchema = SchemaObject<TaskEntity>({
-  name: new StringSchema("name"),
-  description: new StringSchema("description"),
+const TasKSchema = BuildSchema<TaskEntity>({
+  name: new StringSchema(),
+  description: new StringSchema(),
 });
 
 async function validateTaskSchema(request: Request, response: Response, next) {

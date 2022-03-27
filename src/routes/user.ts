@@ -7,9 +7,10 @@ import {
 import dependencies from "../config/dependencies";
 import { validateUserSchema } from "../entity/UserEntity";
 import TaskRouter from "./task";
-const UserRouter = Router();
 
 const { userController } = dependencies;
+
+const UserRouter = Router();
 
 UserRouter.use("/:id", validateId, validateToken, validateAccess);
 UserRouter.get("/:id", userController.getEntity);

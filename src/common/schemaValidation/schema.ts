@@ -7,9 +7,10 @@ type SchemaType<T> = {
   [K in keyof T]: Schema<T[K]>;
 };
 
-function SchemaObject<T = {}>(schema: SchemaType<Partial<T>>) {
-  let keys = Object.keys(schema);
-  for (let key of keys) {
+type OperationType = "complete" | "partial";
+
+function BuildSchema<T = {}>(schema: SchemaType<Partial<T>>) {
+  for (let key in schema) {
     schema[key].setKey(key);
   }
   return schema;
@@ -186,37 +187,38 @@ class NumberSchema extends Schema<number> {
 
 async function validateSchema<T>(
   schema: T,
-  body: any,
-  operation: "complete" | "partial"
+  data: any,
+  operation: OperationType
 ): Promise<{}> {
   let newObject = {};
-
+  let keys;
   switch (operation) {
     case "complete":
-      var keys = Object.keys(schema);
+      keys = Object.keys(schema);
 
       for (let key of keys) {
-        if (!(key in body)) {
+        if (!(key in data)) {
           throw new Error(`${key} must be there`);
         }
-        schema[key].validate(body[key]);
-        newObject[key] = body[key];
+
+        //each key validation
+        schema[key].validate(data[key]);
+        newObject[key] = data[key];
       }
       break;
 
     case "partial":
-      let l = Object.keys(body).length;
+      keys = Object.keys(data);
 
-      if (l == 0) {
-        throw new Error("provide valid information");
+      if (keys.length == 0) {
+        throw new Error("schema should not be empty");
       }
-
-      var keys = Object.keys(body);
 
       for (let key of keys) {
         if (key in schema) {
-          schema[key].validate(body[key]);
-          newObject[key] = body[key];
+          //each key validation
+          schema[key].validate(data[key]);
+          newObject[key] = data[key];
         }
       }
       break;
@@ -224,4 +226,4 @@ async function validateSchema<T>(
   return newObject;
 }
 
-export { Schema, StringSchema, NumberSchema, validateSchema, SchemaObject };
+export { Schema, StringSchema, NumberSchema, validateSchema, BuildSchema };

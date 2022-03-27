@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import {
   NumberSchema,
-  SchemaObject,
+  BuildSchema,
   StringSchema,
   validateSchema,
 } from "../common/schemaValidation/schema";
@@ -14,7 +14,7 @@ interface UserEntity extends BaseEntity {
   password: string;
 }
 
-const UserSchema = SchemaObject<UserEntity>({
+const UserSchema = BuildSchema<UserEntity>({
   firstName: new StringSchema().min(5).max(20).onlyAlphabets(),
   lastName: new StringSchema().min(5).max(20).onlyAlphabets(),
   email: new StringSchema().email(),
