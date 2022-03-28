@@ -20,7 +20,7 @@ class Schema<T> {
   protected filters: Array<Filter<T>> = [];
   protected type: string = "";
   protected key: string = "";
-  protected values: T[] = [];
+  // protected values: T[] = [];
 
   setKey(value: string) {
     this.key = value;
@@ -40,30 +40,30 @@ class Schema<T> {
     }
   }
 
-  #contains = (name: T) => {
-    for (let value of this.values) {
-      if (value === name) return true;
-    }
-    return false;
-  };
+  // #contains = (name: T) => {
+  //   for (let value of this.values) {
+  //     if (value === name) return true;
+  //   }
+  //   return false;
+  // };
 
-  of(values: T[]) {
-    let s = "";
-    values.forEach((element, index) => {
-      if (index === values.length - 1) {
-        s += element;
-        return;
-      }
-      s += element + " or ";
-    });
+  // of(values: T[]) {
+  //   let s = "";
+  //   values.forEach((element, index) => {
+  //     if (index === values.length - 1) {
+  //       s += element;
+  //       return;
+  //     }
+  //     s += element + " or ";
+  //   });
 
-    this.values = values;
-    this.filters.push({
-      filter: this.#contains,
-      error: `${this.key} must be ${s}`,
-    });
-    return this;
-  }
+  //   this.values = values;
+  //   this.filters.push({
+  //     filter: this.#contains,
+  //     error: `${this.key} must be ${s}`,
+  //   });
+  //   return this;
+  // }
 }
 
 class StringSchema extends Schema<string> {
@@ -185,22 +185,23 @@ class NumberSchema extends Schema<number> {
   }
 }
 
-async function validateSchema<T>(
-  schema: T,
-  data: any,
+async function validateSchema(
+  schema: {},
+  data: {},
   operation: OperationType
 ): Promise<{}> {
   let newObject = {};
-  let keys;
+
   switch (operation) {
     case "complete":
-      keys = Object.keys(schema);
-
-      for (let key of keys) {
+      //validate all keys
+      for (let key in schema) {
         if (!(key in data)) {
           throw new Error(`${key} must be there`);
         }
+      }
 
+      for (let key in schema) {
         //each key validation
         schema[key].validate(data[key]);
         newObject[key] = data[key];
@@ -208,13 +209,7 @@ async function validateSchema<T>(
       break;
 
     case "partial":
-      keys = Object.keys(data);
-
-      if (keys.length == 0) {
-        throw new Error("schema should not be empty");
-      }
-
-      for (let key of keys) {
+      for (let key in data) {
         if (key in schema) {
           //each key validation
           schema[key].validate(data[key]);
@@ -225,5 +220,11 @@ async function validateSchema<T>(
   }
   return newObject;
 }
+
+let StudentSchema = BuildSchema<{ name: string }>({
+  name: new StringSchema().onlyAlphabets(),
+});
+
+validateSchema(StudentSchema, {}, "partial");
 
 export { Schema, StringSchema, NumberSchema, validateSchema, BuildSchema };
