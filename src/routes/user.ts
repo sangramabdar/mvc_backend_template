@@ -5,7 +5,7 @@ import {
   validateToken,
 } from "../common/helper/validation";
 import dependencies from "../config/dependencies";
-import { validateUserSchema } from "../entity/UserEntity";
+import { validateUserSchema } from "../schema/userSchema";
 import TaskRouter from "./task";
 
 const { userController } = dependencies;

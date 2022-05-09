@@ -8,9 +8,9 @@ import { loginService, signUpService } from "../services/AuthService";
 class AuthController {
   static async login(req: Request, res: Response, next) {
     try {
-      const authEntity = req.body;
+      const loginEntity = req.body;
 
-      const user = await loginService(authEntity);
+      const user = await loginService(loginEntity);
 
       const accessToken = await generateAccessToken(user);
 
@@ -26,13 +26,15 @@ class AuthController {
 
   static async signup(req: Request, res: Response, next) {
     try {
-      const authEntity = req.body;
+      const signUpEntity = req.body;
 
-      const user = await signUpService(authEntity);
+      const { email } = await signUpService(signUpEntity);
 
-      const responseBody = new ResponseBodyBuilder()
+      const responseBody = new ResponseBodyBuilder<{ email: string }>()
         .setStatusCode(201)
-        .setPayload(user);
+        .setPayload({
+          email,
+        });
 
       return res.status(201).json(responseBody);
     } catch (error) {

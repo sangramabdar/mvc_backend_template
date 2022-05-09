@@ -5,12 +5,13 @@ import {
   NotRegistered,
 } from "../common/helper/exceptions";
 import Database from "../config/db";
-import { AuthEntity, LoginEntity } from "../entity/AuthEntity";
-import { UserEntity } from "../entity/UserEntity";
 
-async function signUpService(authEntity: AuthEntity) {
+import { UserEntity } from "../entity/UserEntity";
+import { LoginSchema, SignUpSchema } from "../schema/authSchema";
+
+async function signUpService(signUpSchema: SignUpSchema) {
   const db = await Database.getDb();
-  const { email, password } = authEntity;
+  const { email, password } = signUpSchema;
 
   if (!db) {
     throw new DataBaseConnectionError();
@@ -27,16 +28,16 @@ async function signUpService(authEntity: AuthEntity) {
   const hashPassword = await hash(password, 10);
 
   let result = await db.collection("users").insertOne({
-    ...authEntity,
+    ...signUpSchema,
     password: hashPassword,
   });
 
-  return authEntity;
+  return signUpSchema;
 }
 
-async function loginService(loginEntity: LoginEntity) {
+async function loginService(loginSchema: LoginSchema) {
   const db = await Database.getDb();
-  const { email, password } = loginEntity;
+  const { email, password } = loginSchema;
 
   if (!db) {
     throw new DataBaseConnectionError();

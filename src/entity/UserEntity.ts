@@ -1,10 +1,3 @@
-import { Request, Response } from "express";
-import {
-  NumberSchema,
-  BuildSchema,
-  StringSchema,
-  validateSchema,
-} from "../common/schemaValidation/schema";
 import BaseEntity from "./BaseEntity";
 
 interface UserEntity extends BaseEntity {
@@ -14,25 +7,4 @@ interface UserEntity extends BaseEntity {
   password: string;
 }
 
-const UserSchema = BuildSchema<UserEntity>({
-  firstName: new StringSchema().min(5).max(20).onlyAlphabets(),
-  lastName: new StringSchema().min(5).max(20).onlyAlphabets(),
-  email: new StringSchema().email(),
-  password: new StringSchema().min(8).max(20),
-});
-
-async function validateUserSchema(request: Request, response: Response, next) {
-  try {
-    // if (request.method === "POST") {
-    //   request.body = await validateSchema(UserSchema, request.body, "complete");
-    // } else {
-    //   request.body = await validateSchema(UserSchema, request.body, "partial");
-    // }
-    request.body = await validateSchema(UserSchema, request.body, "partial");
-    next();
-  } catch (error) {
-    next(error);
-  }
-}
-
-export { UserEntity, UserSchema, validateUserSchema };
+export { UserEntity };

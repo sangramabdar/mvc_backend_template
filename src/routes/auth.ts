@@ -1,10 +1,13 @@
 import { Router } from "express";
 import AuthController from "../controllers/AuthController";
-import { validateAuthSchema, validateLoginSchema } from "../entity/AuthEntity";
+import {
+  validateLoginSchema,
+  validateSignUpSchema,
+} from "../schema/authSchema";
 
 const AuthRouter = Router();
 
-AuthRouter.post("/signup", validateAuthSchema, AuthController.signup);
+AuthRouter.post("/signup", validateSignUpSchema, AuthController.signup);
 
 AuthRouter.post("/login", validateLoginSchema, AuthController.login);
 

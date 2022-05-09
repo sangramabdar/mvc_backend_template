@@ -1,7 +1,7 @@
 import { Router } from "express";
 import dependencies from "../config/dependencies";
 import { validateId } from "../common/helper/validation";
-import { validateTaskSchema } from "../entity/TaskEntity";
+import { validateTaskSchema } from "../schema/taskSchema";
 const TaskRouter = Router();
 
 const { taskController } = dependencies;
