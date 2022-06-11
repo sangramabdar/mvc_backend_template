@@ -8,7 +8,7 @@ import { UserEntity } from "../entity/UserEntity";
 
 interface UserSchema extends UserEntity {}
 
-const userSchema = BuildSchema<UserEntity>({
+const userSchema = BuildSchema<UserSchema>({
   firstName: new StringSchema().min(5).max(20).onlyAlphabets(),
   lastName: new StringSchema().min(5).max(20).onlyAlphabets(),
   email: new StringSchema().email(),

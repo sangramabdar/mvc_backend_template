@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
 import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
-import Database from "../../config/db";
-import { DataBaseConnectionError } from "./exceptions";
 
 async function validateId(req: Request, res: Response, next) {
   let id = req.params["id"];

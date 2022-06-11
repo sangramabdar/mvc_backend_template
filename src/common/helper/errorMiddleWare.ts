@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Response, Request } from "express";
 import {
   DataBaseConnectionError,
   EntityNotFound,
@@ -6,37 +6,43 @@ import {
 } from "./exceptions";
 import ResponseBodyBuilder from "./responseBodyBuilder";
 
-async function statusCodeHandler(
+async function statusHandler(
   error: Error,
   responseBody: ResponseBodyBuilder<string>,
   response: Response
 ) {
   if (error instanceof DataBaseConnectionError) {
-    responseBody.setStatusCode(500);
-    response.statusCode = 500;
+    responseBody.setStatus(500);
+    response.status(500);
   } else if (error instanceof EntityNotFound) {
-    responseBody.setStatusCode(404);
-    response.statusCode = 404;
+    responseBody.setStatus(404);
+    response.status(404);
   } else if (error instanceof WrongContent) {
-    responseBody.setStatusCode(422);
-    response.statusCode = 422;
+    responseBody.setStatus(422);
+
+    response.status(422);
   } else {
-    responseBody.setStatusCode(400);
-    response.statusCode = 400;
+    responseBody.setStatus(400);
+    response.status(400);
   }
 }
 
-async function errorHandlingMiddleWare(error, request, response, next) {
+async function errorHandlingMiddleWare(
+  error,
+  request: Request,
+  response: Response,
+  next
+) {
   let responseBody = new ResponseBodyBuilder<string>("");
 
-  if (error instanceof Error) {
-    responseBody.setPayload(error.message);
-  } else {
-    responseBody.setPayload(error);
-  }
+  // if (error instanceof Error) {
+  //   responseBody.setPayload(error.message);
+  // } else {
+  //   responseBody.setPayload(error);
+  // }
 
-  await statusCodeHandler(error, responseBody, response);
+  await statusHandler(error, responseBody, response);
   return response.json(responseBody);
 }
 
-export { errorHandlingMiddleWare, statusCodeHandler };
+export { errorHandlingMiddleWare, statusHandler };

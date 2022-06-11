@@ -1,17 +1,13 @@
 class ResponseBodyBuilder<T = any> {
   private timeStamp: number;
   private error: string;
-  private statusCode: number;
+  private status: number;
   private payload: T | {};
 
-  constructor(
-    error: string = "",
-    payload: T | {} = {},
-    statusCode: number = 200
-  ) {
+  constructor(error: string = "", payload: T | {} = {}, status: number = 200) {
     this.timeStamp = Date.now();
     this.error = error;
-    this.statusCode = statusCode;
+    this.status = status;
     this.payload = payload;
   }
 
@@ -20,8 +16,8 @@ class ResponseBodyBuilder<T = any> {
     return this;
   }
 
-  setStatusCode(statusCode: number) {
-    this.statusCode = statusCode;
+  setStatus(status: number) {
+    this.status = status;
     return this;
   }
 

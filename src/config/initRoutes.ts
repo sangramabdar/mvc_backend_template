@@ -10,6 +10,8 @@ async function initRoutes() {
   app.use("/auth", AuthRouter);
   app.use("/users", UserRouter);
   app.use("*", RootController.wrongRoute);
+
+  //global error handling middleware
   app.use(errorHandlingMiddleWare);
 }
 

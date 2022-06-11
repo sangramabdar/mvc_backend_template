@@ -8,7 +8,7 @@ import { TaskEntity } from "../entity/TaskEntity";
 
 interface TaskSchema extends TaskEntity {}
 
-const taskSchema = BuildSchema<TaskEntity>({
+const taskSchema = BuildSchema<TaskSchema>({
   name: new StringSchema(),
   description: new StringSchema(),
 });

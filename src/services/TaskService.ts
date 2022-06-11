@@ -11,7 +11,7 @@ import { Request } from "express";
 import {
   TaskRepository,
   TaskRepositoryImpl,
-} from "../repository/TaskRespository";
+} from "../repository/TaskRepository";
 
 class TaskService extends CrudService<TaskEntity, TaskRepository> {
   constructor() {
