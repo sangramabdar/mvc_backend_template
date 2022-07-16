@@ -64,6 +64,7 @@ async function generateRefreshToken(payload: any, expiresIn: string = "") {
 
 async function verifyAccessToken(token: string): Promise<jwt.JwtPayload> {
   const data = await jwt.verify(token, process.env.ACCESS_KEY!!);
+  console.log(data);
   delete data.iat;
   delete data.exp;
   return data;

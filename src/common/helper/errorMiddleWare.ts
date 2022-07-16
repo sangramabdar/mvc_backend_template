@@ -19,7 +19,6 @@ async function statusHandler(
     response.status(404);
   } else if (error instanceof WrongContent) {
     responseBody.setStatus(422);
-
     response.status(422);
   } else {
     responseBody.setStatus(400);
@@ -33,13 +32,13 @@ async function errorHandlingMiddleWare(
   response: Response,
   next
 ) {
-  let responseBody = new ResponseBodyBuilder<string>("");
+  let responseBody = new ResponseBodyBuilder<string>();
 
-  // if (error instanceof Error) {
-  //   responseBody.setPayload(error.message);
-  // } else {
-  //   responseBody.setPayload(error);
-  // }
+  if (error instanceof Error) {
+    responseBody.setError(error.message);
+  } else {
+    responseBody.setError(error);
+  }
 
   await statusHandler(error, responseBody, response);
   return response.json(responseBody);

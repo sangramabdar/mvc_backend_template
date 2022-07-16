@@ -2,13 +2,14 @@ import { Response, Request } from "express";
 
 import ResponseBodyBuilder from "../common/helper/responseBodyBuilder";
 import { generateAccessToken } from "../common/helper/validation";
+import { LoginSchema } from "../schema/authSchema";
 
 import { loginService, signUpService } from "../services/AuthService";
 
 class AuthController {
   static async login(req: Request, res: Response, next) {
     try {
-      const loginEntity = req.body;
+      const loginEntity = req.body as LoginSchema;
 
       const user = await loginService(loginEntity);
 

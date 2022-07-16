@@ -24,7 +24,7 @@ class CrudController<E, T extends CrudService<E, CrudRepository<E>>> {
   getAllEntities = async (request: Request, response: Response, next: any) => {
     try {
       const result = await this.entityService.getAllEntities(request);
-      let responseBody = new ResponseBodyBuilder<E[]>("", result);
+      let responseBody = new ResponseBodyBuilder<E[]>();
       return response.json(responseBody);
     } catch (error) {
       next(error);
@@ -35,7 +35,7 @@ class CrudController<E, T extends CrudService<E, CrudRepository<E>>> {
     try {
       const entity: E = request.body;
       const result = await this.entityService.saveEntity(entity, request);
-      let responseBody = new ResponseBodyBuilder<E>("", result).setStatus(201);
+      let responseBody = new ResponseBodyBuilder<E>().setStatus(201);
       return response.status(201).json(responseBody);
     } catch (error) {
       next(error);
@@ -47,7 +47,7 @@ class CrudController<E, T extends CrudService<E, CrudRepository<E>>> {
       const id = request.params["id"];
       const entity: E = request.body;
       const result = await this.entityService.updateEntity(id, entity, request);
-      const responseBody = new ResponseBodyBuilder<string>("", result);
+      const responseBody = new ResponseBodyBuilder<string>();
       return response.json(responseBody);
     } catch (error) {
       next(error);
@@ -58,7 +58,7 @@ class CrudController<E, T extends CrudService<E, CrudRepository<E>>> {
     try {
       const id = request.params["id"];
       const result = await this.entityService.deleteEntity(id, request);
-      const responseBody = new ResponseBodyBuilder<string>("", result);
+      const responseBody = new ResponseBodyBuilder<string>();
       return response.json(responseBody);
     } catch (error) {
       next(error);
